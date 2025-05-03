@@ -1,6 +1,6 @@
 "use server"
 
-export const register = async function(prevState, FormData) {
+export const register = async function (prevState, FormData) {
     const errors = {}
 
     const ourUser = {
@@ -24,5 +24,13 @@ export const register = async function(prevState, FormData) {
             errors: errors,
             success: false,
         }
+    }
+
+    // Storing the new user in the database
+
+    // log the user in by giving them a cookie
+
+    return {
+        success: true
     }
 }
