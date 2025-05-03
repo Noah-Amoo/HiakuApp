@@ -7,23 +7,26 @@ export default function RootLayout({ children }) {
       <body>
         <header className="bg-gray-100 shadow-md">
           <div className="container mx-auto">
-          <div className="navbar shadow-sm">
-            <div className="flex-1">
-              <Link href='/' className="btn btn-ghost text-xl">Haiku App</Link>
+            <div className="navbar shadow-sm">
+              <div className="flex-1">
+                <Link href='/' className="btn btn-ghost text-xl">Haiku App</Link>
+              </div>
+              <div className="flex-none">
+                <ul className="menu menu-horizontal px-1">
+                  <li>
+                    <Link href='/login'>Log In</Link>
+                  </li>
+                </ul>
+              </div>
             </div>
-            <div className="flex-none">
-              <ul className="menu menu-horizontal px-1">
-                <li><a>Link</a></li>
-                <li>
-                  <Link href='/login'>Log In</Link>
-                </li>
-              </ul>
-            </div>
-          </div>
           </div>
         </header>
-        {children}
-        <footer>Footer</footer>
+        <main className="container mx-auto my-10">
+          {children}
+        </main>
+        <footer className="text-gray-400 text-center text-xs py-5">
+          <p>Copyright &copy; {new Date().getFullYear()} - All rights reserved.</p>
+        </footer>
       </body>
     </html>
   );
