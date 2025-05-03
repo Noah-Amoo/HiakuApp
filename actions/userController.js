@@ -1,5 +1,10 @@
 "use server"
 
+function isAlphaNumeric(x) {
+    const regex = /^[a-zA-Z0-9]*$/
+    return regex.test(x)
+}
+
 export const register = async function (prevState, FormData) {
     const errors = {}
 
@@ -18,6 +23,8 @@ export const register = async function (prevState, FormData) {
     // Validation
     if (ourUser.username.length < 3) errors.username = "Username must be at least 3 characters long"
     if (ourUser.username.length > 30) errors.username = "Username cannot be longer than 30 characters"
+    if (!isAlphaNumeric(ourUser.username)) errors.username = "Username can only contain letters and numbers"
+    if (ourUser.username === "") errors.username = "You must provide a username"
 
     if (errors.username || errors.password) {
         return {
