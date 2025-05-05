@@ -1,12 +1,12 @@
 "use client"
 
-import { useFormState, useFormStatus } from 'react-dom'
+import { useActionState } from 'react'
 import { register } from '@/actions/userController'
 
 import React from 'react'
 
 export default function RegisterForm() {
-    const [formState, formAction] = useFormState(register, {})
+    const [formState, formAction] = useActionState(register, {})
     console.log('Form state:', formState)
 
   return (

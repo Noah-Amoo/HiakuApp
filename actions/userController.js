@@ -1,5 +1,8 @@
 "use server"
 
+import { getCollection } from "@/lib/db.js"
+import bcrypt from "bcrypt"
+
 function isAlphaNumeric(x) {
     const regex = /^[a-zA-Z0-9]*$/
     return regex.test(x)
@@ -37,7 +40,13 @@ export const register = async function (prevState, FormData) {
         }
     }
 
+    // Hashing the password before storing it in the database
+    const salt = bcrypt.genSaltSync(10)
+    ourUser.password = bcrypt.hashSync(ourUser.password, salt)
+
     // Storing the new user in the database
+    const usersCollection = await getCollection("users")
+    await usersCollection.insertOne(ourUser)
 
     // log the user in by giving them a cookie
 
