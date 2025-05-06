@@ -4,10 +4,16 @@ import { getCollection } from "@/lib/db.js"
 import bcrypt from "bcrypt"
 import { cookies } from "next/headers"
 import jwt from "jsonwebtoken"
+import { redirect } from "next/navigation"
 
 function isAlphaNumeric(x) {
     const regex = /^[a-zA-Z0-9]*$/
     return regex.test(x)
+}
+
+export const logout = async function () {
+    (await cookies()).delete("ourhaikuapp")
+    redirect("/")
 }
 
 export const register = async function (prevState, FormData) {

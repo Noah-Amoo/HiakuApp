@@ -1,7 +1,10 @@
 import React from 'react'
 import Link from 'next/link'
+import getUserFromCookie from '@/lib/getUser'
+import { logout } from '@/actions/userController'
 
-export default function Header() {
+export default async function Header() {
+    const user = await getUserFromCookie()
   return (
       <header className="bg-gray-100 shadow-md">
           <div className="container mx-auto">
@@ -11,9 +14,18 @@ export default function Header() {
               </div>
               <div className="flex-none">
                 <ul className="menu menu-horizontal px-1">
-                  <li>
+                  {user && (
+                    <li>
+                        <form action= {logout} className='btn btn-neutral'>
+                            <button>Log Out</button>
+                        </form>
+                  </li>
+                  )}
+                  {!user && (
+                    <li>
                     <Link href='/login'>Log In</Link>
                   </li>
+                  )}
                 </ul>
               </div>
             </div>
