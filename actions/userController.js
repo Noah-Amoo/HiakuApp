@@ -2,6 +2,8 @@
 
 import { getCollection } from "@/lib/db.js"
 import bcrypt from "bcrypt"
+import { cookies } from "next/headers"
+import jwt from "jsonwebtoken"
 
 function isAlphaNumeric(x) {
     const regex = /^[a-zA-Z0-9]*$/
@@ -46,9 +48,19 @@ export const register = async function (prevState, FormData) {
 
     // Storing the new user in the database
     const usersCollection = await getCollection("users")
-    await usersCollection.insertOne(ourUser)
+    const newUser = await usersCollection.insertOne(ourUser)
+    const userId = newUser.insertedId.toString()
+
+    // Creating a JWT token for the user
+    const ourTokenValue = jwt.sign({ userId: userId, exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 }, process.env.JWTSECRET)
 
     // log the user in by giving them a cookie
+    cookies().set("ourhaikuapp", ourTokenValue, {
+        httpOnly: true, // Only the server can read this cookie
+        sameSite: "strict", // CSRF protection
+        maxAge: 1000 * 60 * 60 * 24, // 1 
+        secure: true, // Only send this cookie over HTTPS
+    })
 
     return {
         success: true
