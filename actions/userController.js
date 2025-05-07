@@ -11,6 +11,47 @@ function isAlphaNumeric(x) {
     return regex.test(x)
 }
 
+export const login = async function (prevState, formData) {
+    const failObject = {
+        success: false,
+        message: "Username or password is incorrect",
+    }
+
+    const ourUser = {
+        username: formData.get("username"),
+        password: formData.get("password"),
+    }
+
+    if (typeof ourUser.username !== "string") ourUser.username = ""
+    if (typeof ourUser.password !== "string") ourUser.password = ""
+
+    const collection = await getCollection("users")
+    const user = await collection.findOne({ username: ourUser.username })
+    if (!user) {
+        return failObject
+    }
+
+    const marchOrNot = bcrypt.compareSync(ourUser.password, user.password)
+
+    if (!marchOrNot) {
+        return failObject
+    }
+
+    // Creating a JWT token for the user
+    const ourTokenValue = jwt.sign({ userId: user._Id, exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 }, process.env.JWTSECRET)
+
+    // log the user in by giving them a cookie
+    cookies().set("ourhaikuapp", ourTokenValue, {
+        httpOnly: true, // Only the server can read this cookie
+        sameSite: "strict", // CSRF protection
+        maxAge: 1000 * 60 * 60 * 24, // 1 day
+        secure: true, // Only send this cookie over HTTPS
+    })
+
+    return redirect("/")
+
+}
+
 export const logout = async function () {
     (await cookies()).delete("ourhaikuapp")
     redirect("/")
