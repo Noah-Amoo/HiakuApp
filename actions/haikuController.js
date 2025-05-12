@@ -94,8 +94,11 @@ export async function editHaiku(prevState, formData) {
     // Update haiku to the database
     const haikusCollection = await getCollection('haikus')
     let haikuId = formData.get("haikuId")
+    if (typeof haikuId !== 'string') haikuId = ''
 
+    // Ensure you are the author of this post, otherwise have operation fail
 
+    await haikusCollection.findOneAndUpdate({_id: ObjectId.createFromHexString(haikuId)}, {$set: results.ourHaiku})
 
     return redirect('/')
 }
