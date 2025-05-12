@@ -73,3 +73,28 @@ export default async function createHaiku(prevState, formData) {
     const newHaiku = await haikusCollection.insertOne(results.ourHaiku)
     return redirect('/')
 }
+
+
+// Edit/Update Haiku
+export async function editHaiku(prevState, formData) {
+    const user = await getUserFromCookie()
+
+    if (!user) {
+        return redirect('/')
+    }
+
+    const results = await sharedHaikuLogic(formData, user)
+
+    if (results.errors.line1 || results.errors.line2 || results.errors.line3) {
+        return {
+            errors: results.errors
+        }
+    }
+
+    // Update haiku to the database
+    const haikusCollection = await getCollection('haikus')
+
+
+
+    return redirect('/')
+}
