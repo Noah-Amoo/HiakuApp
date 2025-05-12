@@ -93,6 +93,7 @@ export async function editHaiku(prevState, formData) {
 
     // Update haiku to the database
     const haikusCollection = await getCollection('haikus')
+    let haikuId = formData.get("haikuId")
 
 
 

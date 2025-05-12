@@ -1,11 +1,21 @@
 import React from 'react'
 import HaikuForm from '@/components/HaikuForm'
+import { getCollection } from '@/lib/db'
+import { ObjectId } from 'mongodb'
 
-export default function page(props) {
+async function getDoc(id) {
+    const haikusCollection = await getCollection('haikus')
+    const result  = await haikusCollection.findOne({_id: ObjectId.createFromHexString(id)})
+    return result
+}
+
+export default async function page(props) {
+    const doc = await getDoc(props.params.id)
+    
   return (
     <div>
       <h2 className='text-center text-4xl text-gray-600 mb-6'>Edit Post</h2>
-      <HaikuForm />
+      <HaikuForm haiku = {doc} action = "edit" />
     </div>
   )
 }
