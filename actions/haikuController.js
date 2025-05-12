@@ -16,14 +16,7 @@ async function sharedHaikuLogic(formData, user) {
         line1: formData.get('line1'),
         line2: formData.get('line2'),
         line3: formData.get('line3'),
-    }
-
-    // Validate userId
-    try {
-        ourHaiku.author = new ObjectId(user.userId) // Safely create ObjectId
-    } catch (err) {
-        errors.userId = 'Invalid user ID'
-        return { errors, ourHaiku }
+        author: ObjectId.createFromHexString(user.userId)
     }
 
     if (typeof ourHaiku.line1 !== 'string') ourHaiku.line1 = ''
@@ -69,7 +62,7 @@ export default async function createHaiku(prevState, formData) {
 
     const results = await sharedHaikuLogic(formData, user)
 
-    if (results.errors.line1 || results.errors.line2 || results.errors.line3 || results.errors.userId) {
+    if (results.errors.line1 || results.errors.line2 || results.errors.line3) {
         return {
             errors: results.errors
         }

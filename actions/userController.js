@@ -38,7 +38,13 @@ export const login = async function (prevState, formData) {
     }
 
     // Creating a JWT token for the user
-    const ourTokenValue = jwt.sign({ userId: user._Id, exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 }, process.env.JWTSECRET)
+    const ourTokenValue = jwt.sign(
+        { userId: user._id.toString(), exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 }, // Include userId in the payload
+        process.env.JWTSECRET
+    )
+
+    console.log("Generated JWT:", ourTokenValue);
+    console.log("Decoded JWT:", jwt.verify(ourTokenValue, process.env.JWTSECRET));
 
     // log the user in by giving them a cookie
     cookies().set("ourhaikuapp", ourTokenValue, {
@@ -58,65 +64,67 @@ export const logout = async function () {
 }
 
 export const register = async function (prevState, FormData) {
-    const errors = {}
+    const errors = {};
 
     const ourUser = {
         username: FormData.get("username"),
         password: FormData.get("password"),
+    };
 
-    }
+    if (typeof ourUser.username !== "string") ourUser.username = "";
+    if (typeof ourUser.password !== "string") ourUser.password = "";
 
-    if (typeof ourUser.username !== "string") ourUser.username = ""
-    if (typeof ourUser.password !== "string") ourUser.password = ""
-
-    ourUser.username = ourUser.username.trim()
-    ourUser.password = ourUser.password.trim()
+    ourUser.username = ourUser.username.trim();
+    ourUser.password = ourUser.password.trim();
 
     // Validation
-    if (ourUser.username.length < 3) errors.username = "Username must be at least 3 characters long"
-    if (ourUser.username.length > 30) errors.username = "Username cannot be longer than 30 characters"
-    if (ourUser.username == "") errors.username = "You must provide a username"
-    if (!isAlphaNumeric(ourUser.username)) errors.username = "Username can only contain letters and numbers"
+    if (ourUser.username.length < 3) errors.username = "Username must be at least 3 characters long";
+    if (ourUser.username.length > 30) errors.username = "Username cannot be longer than 30 characters";
+    if (ourUser.username === "") errors.username = "You must provide a username";
+    if (!isAlphaNumeric(ourUser.username)) errors.username = "Username can only contain letters and numbers";
 
     // Check if the username already exists in the database
-    const usersCollection = await getCollection("users") 
-    const usernameInQuestion = await usersCollection.findOne({ username: ourUser.username})
+    const usersCollection = await getCollection("users");
+    const usernameInQuestion = await usersCollection.findOne({ username: ourUser.username });
 
     if (usernameInQuestion) {
-        errors.username = "Username already exists"
+        errors.username = "Username already exists";
     }
 
-    if (ourUser.password.length < 12) errors.password = "Password must be at least 12 characters long"
-    if (ourUser.password.length > 50) errors.password = "Password cannot be longer than 50 characters"
-    if (ourUser.password == "") errors.password = "You must provide a password"
+    if (ourUser.password.length < 12) errors.password = "Password must be at least 12 characters long";
+    if (ourUser.password.length > 50) errors.password = "Password cannot be longer than 50 characters";
+    if (ourUser.password === "") errors.password = "You must provide a password";
 
     if (errors.username || errors.password) {
         return {
             errors: errors,
             success: false,
-        }
+        };
     }
 
     // Hashing the password before storing it in the database
-    const salt = bcrypt.genSaltSync(10)
-    ourUser.password = bcrypt.hashSync(ourUser.password, salt)
+    const salt = bcrypt.genSaltSync(10);
+    ourUser.password = bcrypt.hashSync(ourUser.password, salt);
 
     // Storing the new user in the database
-    const newUser = await usersCollection.insertOne(ourUser)
-    const userId = newUser.insertedId.toString()
+    const newUser = await usersCollection.insertOne({ourUser});
+    const userId = newUser.insertedId.toString();
 
     // Creating a JWT token for the user
-    const ourTokenValue = jwt.sign({ userId: userId, exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 }, process.env.JWTSECRET)
+    const ourTokenValue = jwt.sign(
+        { userId: userId, exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 },
+        process.env.JWTSECRET
+    );
 
-    // log the user in by giving them a cookie
+    // Log the user in by giving them a cookie
     cookies().set("ourhaikuapp", ourTokenValue, {
         httpOnly: true, // Only the server can read this cookie
         sameSite: "strict", // CSRF protection
-        maxAge: 1000 * 60 * 60 * 24, // 1 
+        maxAge: 1000 * 60 * 60 * 24, // 1 day
         secure: true, // Only send this cookie over HTTPS
-    })
+    });
 
     return {
-        success: true
-    }
-}
+        success: true,
+    };
+};
