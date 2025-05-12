@@ -5,7 +5,6 @@ import Dashboard from '@/components/Dashboard'
 
 export default async function page() {
   const user = await getUserFromCookie();
-  console.log("User from cookie:", user)
 
   return (
     <div>

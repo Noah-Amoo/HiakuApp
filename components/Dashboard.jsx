@@ -1,6 +1,7 @@
 import React from 'react'
 import { ObjectId } from 'mongodb'
 import { getCollection } from '@/lib/db'
+import Link from 'next/link'
 
 async function getHaikus(id) {
   const collection = await getCollection("haikus")
@@ -24,7 +25,9 @@ export default async function Dashboard(props) {
             <p className='text-lg'>{haiku.line1}</p>
             <p className='text-lg'>{haiku.line2}</p>
             <p className='text-lg'>{haiku.line3}</p>
-            <hr className='border-t-2 border-gray-300 my-4' />
+            <Link href={`/edit-haiku/${haiku._id.toString()}`}>Edit</Link>
+            
+            <hr className='border-t-2 border-gray-300 mt-4' />
           </div>
         )
       })}
