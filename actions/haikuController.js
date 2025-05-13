@@ -4,12 +4,21 @@ import getUserFromCookie from '@/lib/getUser'
 import { redirect } from 'next/navigation'
 import { ObjectId } from 'mongodb'
 import { getCollection } from '@/lib/db'
+import cloudinary from 'cloudinary'
+
+// Cloudinary configuration
+const cloudinaryConfig = cloudinary.config({
+    cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 function isAlphaNumericWithBasics(str) {
     return /^[a-zA-Z0-9 .,]*$/.test(str)
 }
 
 async function sharedHaikuLogic(formData, user) {
+
     const errors = {}
 
     const ourHaiku = {
@@ -46,6 +55,13 @@ async function sharedHaikuLogic(formData, user) {
     if (ourHaiku.line1.length === 0) errors.line1 = 'This field is required'
     if (ourHaiku.line2.length === 0) errors.line2 = 'This field is required'
     if (ourHaiku.line3.length === 0) errors.line3 = 'This field is required'
+
+    // Verify signature
+    const expectedSignature = cloudinary.utils.api_sign_request({ public_id: formData.get("public_id"), version: formData.get("version") }, cloudinaryConfig.api_secret)
+
+    if (expectedSignature === formData.get("signature")) {
+        ourHaiku.photo = formData.get("public_id")
+    }
 
     return {
         errors,
@@ -85,16 +101,16 @@ export async function deleteHaiku(formData) {
     const haikusCollection = await getCollection('haikus')
     let haikuId = formData.get("id")
     if (typeof haikuId !== 'string') haikuId = ''
-    
+
     // Ensure you are the author of this post, otherwise have operation fail
-    const haikuInQuestion = await haikusCollection.findOne({_id: ObjectId.createFromHexString(haikuId)})
-    
+    const haikuInQuestion = await haikusCollection.findOne({ _id: ObjectId.createFromHexString(haikuId) })
+
     if (haikuInQuestion.author.toString() !== user.userId) {
         return redirect('/')
     }
-    
-    await haikusCollection.deleteOne({_id: ObjectId.createFromHexString(haikuId)})
-    
+
+    await haikusCollection.deleteOne({ _id: ObjectId.createFromHexString(haikuId) })
+
     return redirect('/')
 }
 
@@ -121,13 +137,13 @@ export async function editHaiku(prevState, formData) {
     if (typeof haikuId !== 'string') haikuId = ''
 
     // Ensure you are the author of this post, otherwise have operation fail
-    const haikuInQuestion = await haikusCollection.findOne({_id: ObjectId.createFromHexString(haikuId)})
+    const haikuInQuestion = await haikusCollection.findOne({ _id: ObjectId.createFromHexString(haikuId) })
 
     if (haikuInQuestion.author.toString() !== user.userId) {
         return redirect('/')
     }
 
-    await haikusCollection.findOneAndUpdate({_id: ObjectId.createFromHexString(haikuId)}, {$set: results.ourHaiku})
+    await haikusCollection.findOneAndUpdate({ _id: ObjectId.createFromHexString(haikuId) }, { $set: results.ourHaiku })
 
     return redirect('/')
 }
