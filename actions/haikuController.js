@@ -97,6 +97,11 @@ export async function editHaiku(prevState, formData) {
     if (typeof haikuId !== 'string') haikuId = ''
 
     // Ensure you are the author of this post, otherwise have operation fail
+    const haikuInQuestion = await haikusCollection.findOne({_id: ObjectId.createFromHexString(haikuId)})
+
+    if (haikuInQuestion.author.toString() !== user.userId) {
+        return redirect('/')
+    }
 
     await haikusCollection.findOneAndUpdate({_id: ObjectId.createFromHexString(haikuId)}, {$set: results.ourHaiku})
 
