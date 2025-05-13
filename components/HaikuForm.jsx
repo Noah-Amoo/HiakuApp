@@ -60,8 +60,15 @@ export default function HaikuForm(props) {
     <div className='mb-4'>
         <CldUploadWidget signatureEndpoint="/widget-signature">
           {({ open }) => {
+
+            // This function prevents the default behavior of the button to automatically submit the form
+            function handleClick(e) {
+              e.preventDefault()
+              open()
+            }
+            
             return (
-              <button className='btn btn-secondary' onClick={() => open()}>
+              <button className='btn btn-secondary' onClick={handleClick}>
                 Upload an Image
               </button>
             );
