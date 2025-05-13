@@ -2,13 +2,13 @@ import React from 'react'
 import { ObjectId } from 'mongodb'
 import { getCollection } from '@/lib/db'
 import Link from 'next/link'
-import { deleteHaiku } from '@/actios/haikuController'
+import { deleteHaiku } from '@/actions/haikuController'
 
 async function getHaikus(id) {
   const collection = await getCollection("haikus")
   const results = await collection
     .find({ author: ObjectId.createFromHexString(id) })
-    .sort()
+    .sort({ _id: -1 })
     .toArray()
   return results
 }
