@@ -2,6 +2,7 @@ import React from 'react'
 import { ObjectId } from 'mongodb'
 import { getCollection } from '@/lib/db'
 import Link from 'next/link'
+import { deleteHaiku } from '@/actios/haikuController'
 
 async function getHaikus(id) {
   const collection = await getCollection("haikus")
@@ -26,6 +27,10 @@ export default async function Dashboard(props) {
             <p className='text-lg'>{haiku.line2}</p>
             <p className='text-lg'>{haiku.line3}</p>
             <Link href={`/edit-haiku/${haiku._id.toString()}`}>Edit</Link>
+            <form action={ deleteHaiku }>
+              <input name='id' type="hidden" defaultValue={haiku._id.toString()} />
+              <button>Delete</button>
+            </form>
             
             <hr className='border-t-2 border-gray-300 mt-4' />
           </div>
