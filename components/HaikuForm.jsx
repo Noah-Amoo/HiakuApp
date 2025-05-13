@@ -58,7 +58,9 @@ export default function HaikuForm(props) {
     </div>
 
     <div className='mb-4'>
-        <CldUploadWidget signatureEndpoint="/widget-signature">
+        <CldUploadWidget onQueuesEnd={(result, {widget}) => {
+          widget.close()
+        }} signatureEndpoint="/widget-signature">
           {({ open }) => {
 
             // This function prevents the default behavior of the button to automatically submit the form
