@@ -4,6 +4,7 @@ import React from 'react'
 import { useActionState } from 'react'
 import createHaiku from '@/actions/haikuController'
 import editHaiku from '@/actions/haikuController'
+import { CldUploadWidget } from 'next-cloudinary'
 
 export default function HaikuForm(props) {
     let actualAction
@@ -56,11 +57,20 @@ export default function HaikuForm(props) {
         )}
     </div>
 
-    <input type="hidden" name='haikuId' defaultValue={props.haiku?._id.toString()} />
-    
-    <div className="mb-3">
-        <button className='btn btn-primary'>Submit</button>
+    <div className='mb-4'>
+        <CldUploadWidget signatureEndpoint="<API Endpoint (ex: /api/sign-cloudinary-params)>">
+          {({ open }) => {
+            return (
+              <button className='btn btn-secondary' onClick={() => open()}>
+                Upload an Image
+              </button>
+            );
+          }}
+        </CldUploadWidget>
     </div>
+
+      <input type="hidden" name='haikuId' defaultValue={props.haiku?._id.toString()} />
+      <button className='btn btn-primary'>Submit</button>
   </form>
   )
 }
