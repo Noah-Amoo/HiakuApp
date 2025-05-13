@@ -58,7 +58,7 @@ export default function HaikuForm(props) {
     </div>
 
     <div className='mb-4'>
-        <CldUploadWidget signatureEndpoint="<API Endpoint (ex: /api/sign-cloudinary-params)>">
+        <CldUploadWidget signatureEndpoint="/widget-signature">
           {({ open }) => {
             return (
               <button className='btn btn-secondary' onClick={() => open()}>
