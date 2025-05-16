@@ -18,6 +18,9 @@ function isAlphaNumericWithBasics(str) {
 }
 
 async function sharedHaikuLogic(formData, user) {
+    console.log(formData.get('signature'))
+    console.log(formData.get('public_id'))
+    console.log(formData.get('version'))
 
     const errors = {}
 
@@ -59,7 +62,7 @@ async function sharedHaikuLogic(formData, user) {
     // Verify signature
     const expectedSignature = cloudinary.utils.api_sign_request(
         {
-            pubulic_id: formData.get("public_id"),
+            public_id: formData.get("public_id"),
             version: formData.get("version")
         },
         cloudinaryConfig.api_secret
@@ -67,7 +70,7 @@ async function sharedHaikuLogic(formData, user) {
 
     if (expectedSignature === formData.get("signature")) {
         ourHaiku.photo = formData.get("public_id")
-    }
+    }  
 
     return {
         errors,

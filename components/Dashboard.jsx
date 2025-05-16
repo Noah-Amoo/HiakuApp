@@ -10,18 +10,22 @@ async function getHaikus(id) {
     .find({ author: ObjectId.createFromHexString(id) })
     .sort({ _id: -1 })
     .toArray()
-  return results
+  // Convert ObjectId fields to strings for serialization
+  return results.map(h => ({
+    ...h,
+    _id: h._id.toString(),
+    author: h.author.toString(),
+  }))
 }
 
 export default async function Dashboard(props) {
-
   const haikus = await getHaikus(props.user.userId)
 
   return (
     <div>
       <h2 className='text-center text-2xl text-gray-600 mb-5'>Your Haikus</h2>
       {haikus.map((haiku, index) => {
-        return <Haiku haiku={haiku} key={index} />
+        return <Haiku haiku={haiku} key={haiku._id} />
       })}
     </div>
   )
