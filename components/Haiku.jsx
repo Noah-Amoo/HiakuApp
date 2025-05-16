@@ -20,6 +20,36 @@ export default function Haiku(props) {
                     source: 'true'
                 }}
                 fillBackground
+                // Implementing text overlay on the image
+                overlays={[{
+                    position: {
+                        x: 34,
+                        y: 154, 
+                        angle: -10,
+                        gravity: 'north_west',
+                    },
+                    text: {
+                        color: 'black',
+                        fontFamily: 'Source Sans Pro',
+                        fontSize: 100,
+                        fontWeight: 'bold',
+                        text: `${props.haiku.line1}%0A${props.haiku.line2}%0A${props.haiku.line3}`,
+                    }
+                }, {
+                    position: {
+                        x: 30,
+                        y: 150, 
+                        angle: -10,
+                        gravity: 'north_west',
+                    },
+                    text: {
+                        color: 'white',
+                        fontFamily: 'Source Sans Pro',
+                        fontSize: 100,
+                        fontWeight: 'bold',
+                        text: `${props.haiku.line1}%0A${props.haiku.line2}%0A${props.haiku.line3}`,
+                    }
+                }]}
             />
             <p className='text-lg'>{props.haiku.line1}</p>
             <p className='text-lg'>{props.haiku.line2}</p>
