@@ -57,7 +57,13 @@ async function sharedHaikuLogic(formData, user) {
     if (ourHaiku.line3.length === 0) errors.line3 = 'This field is required'
 
     // Verify signature
-    const expectedSignature = cloudinary.utils.api_sign_request({ public_id: formData.get("public_id"), version: formData.get("version") }, cloudinaryConfig.api_secret)
+    const expectedSignature = cloudinary.utils.api_sign_request(
+        {
+            pubulic_id: formData.get("public_id"),
+            version: formData.get("version")
+        },
+        cloudinaryConfig.api_secret
+    )
 
     if (expectedSignature === formData.get("signature")) {
         ourHaiku.photo = formData.get("public_id")
