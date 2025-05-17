@@ -78,7 +78,7 @@ async function sharedHaikuLogic(formData, user) {
     }
 }
 
-export default async function createHaiku(prevState, formData) {
+export async function createHaiku(prevState, formData) {
     const user = await getUserFromCookie()
 
     if (!user) {

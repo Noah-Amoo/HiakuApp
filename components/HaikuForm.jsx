@@ -3,8 +3,7 @@
 import React from 'react'
 import { useState } from 'react'
 import { useActionState } from 'react'
-import createHaiku from '@/actions/haikuController'
-import editHaiku from '@/actions/haikuController'
+import { createHaiku, editHaiku} from '@/actions/haikuController'
 import { CldUploadWidget } from 'next-cloudinary'
 
 export default function HaikuForm(props) {
@@ -14,12 +13,11 @@ export default function HaikuForm(props) {
 
   let actualAction
 
-  if (props.action === "create") {
-    actualAction = createHaiku
-  }
-
   if (props.action === "edit") {
     actualAction = editHaiku
+  } 
+  else {
+    actualAction = createHaiku
   }
 
   const [formState, formAction] = useActionState(actualAction, {})
