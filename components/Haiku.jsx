@@ -7,7 +7,7 @@ import { CldImage } from 'next-cloudinary';
 
 export default function Haiku(props) {
     return (
-        <div className='bg-gray-100 p-4 mb-4 rounded-lg'>
+        <div className='relative rounded-xl overflow-hidden max-w-[650px] mx-auto mb-7'>
             <CldImage
                 width="650"
                 height="300"
@@ -51,16 +51,15 @@ export default function Haiku(props) {
                     }
                 }]}
             />
-            <p className='text-lg'>{props.haiku.line1}</p>
-            <p className='text-lg'>{props.haiku.line2}</p>
-            <p className='text-lg'>{props.haiku.line3}</p>
-            <Link href={`/edit-haiku/${props.haiku._id.toString()}`}>Edit</Link>
-            <form action={deleteHaiku}>
-                <input name='id' type="hidden" defaultValue={props.haiku._id.toString()} />
-                <button>Delete</button>
-            </form>
 
-            <hr className='border-t-2 border-gray-300 mt-4' />
+            <div className='absolute bottom-2 right-2 flex'>
+                <Link href={`/edit-haiku/${props.haiku._id.toString()}`}>Edit</Link>
+                <form action={deleteHaiku}>
+                    <input name='id' type="hidden" defaultValue={props.haiku._id.toString()} />
+                    <button>Delete</button>
+                </form>
+            </div>
+
         </div>
     )
 }
