@@ -8,7 +8,12 @@ import { CldImage } from 'next-cloudinary';
 export default function Haiku(props) {
     return (
         <div className='relative rounded-xl overflow-hidden max-w-[650px] mx-auto mb-7'>
+            <img src="/aspect-ratio.png" alt="" />
+            <div className='absolute inset-0 bg-gray-200 grid'>
+                <span className="loading loading-dots loading-lg m-auto"></span>
+            </div>
             <CldImage
+                className='absolute inset-0'
                 width="650"
                 height="300"
                 src={props.haiku.photo}
