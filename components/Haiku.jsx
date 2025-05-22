@@ -5,7 +5,12 @@ import Link from 'next/link'
 import { deleteHaiku } from '@/actions/haikuController'
 import { CldImage } from 'next-cloudinary';
 
+
 export default function Haiku(props) {
+    if (!props.haiku.photo) {
+        props.haiku.photo = "umn9hquj98re11qtarhv"
+
+    }
     return (
         <div className='relative rounded-xl overflow-hidden max-w-[650px] mx-auto mb-7'>
             <img src="/aspect-ratio.png" alt="" />
