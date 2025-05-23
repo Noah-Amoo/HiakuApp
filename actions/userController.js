@@ -52,6 +52,7 @@ export const login = async function (prevState, formData) {
         sameSite: "strict", // CSRF protection
         maxAge: 60 * 60 * 24, // 1 day
         secure: process.env.NODE_ENV === "production", 
+        path: '/'
     })
 
     return redirect("/")
