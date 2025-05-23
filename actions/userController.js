@@ -50,8 +50,8 @@ export const login = async function (prevState, formData) {
     cookies().set("ourhaikuapp", ourTokenValue, {
         httpOnly: true, // Only the server can read this cookie
         sameSite: "strict", // CSRF protection
-        maxAge: 1000 * 60 * 60 * 24, // 1 day
-        secure: true, // Only send this cookie over HTTPS
+        maxAge: 60 * 60 * 24, // 1 day
+        secure: process.env.NODE_ENV === "production", 
     })
 
     return redirect("/")
