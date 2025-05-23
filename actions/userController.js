@@ -108,7 +108,7 @@ export const register = async function (prevState, FormData) {
     ourUser.password = bcrypt.hashSync(ourUser.password, salt);
 
     // Storing the new user in the database
-    const newUser = await usersCollection.insertOne({ourUser});
+    const newUser = await usersCollection.insertOne(ourUser);
     const userId = newUser.insertedId.toString();
 
     // Creating a JWT token for the user
